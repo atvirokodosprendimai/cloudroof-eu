@@ -1,0 +1,22 @@
+dist/index.html
+  s_1b97105afcd1ce::t_f882841c0969d5 450
+  s_1b97105afcd1ce::t_e9e9576ceb3a25 457
+  s_1b97105afcd1ce::t_3e0c3da7f5d37d 463
+  s_1b97105afcd1ce::t_e50986a94f6973 468
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "701bb1a4d1657eeb56fb087da3fc7367c184891e",
+  "prompts": {},
+  "sessions": {
+    "s_1b97105afcd1ce": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "08b7dbcb-979d-46df-8ef8-4cf3146ddd08",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "~.~ <saint@ghost.lt>"
+    }
+  }
+}
