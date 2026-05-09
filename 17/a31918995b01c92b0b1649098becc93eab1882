@@ -1,0 +1,19 @@
+dist/index.html
+  s_1b97105afcd1ce::t_639e30b0f5892f 16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "17a31918995b01c92b0b1649098becc93eab1882",
+  "prompts": {},
+  "sessions": {
+    "s_1b97105afcd1ce": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "08b7dbcb-979d-46df-8ef8-4cf3146ddd08",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "~.~ <saint@ghost.lt>"
+    }
+  }
+}
