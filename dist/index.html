@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>wgmesh Anycast CDN Architecture</title>
+    <title>cloudroof OSS CDN-alternative Architecture</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;700&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -156,15 +156,15 @@
     <section class="slide slide-1" id="slide-0">
         <div class="grid-overlay"></div>
         <div class="content">
-            <span class="tag">wgmesh + BGP Anycast</span>
-            <h1>Global CDN<br>Zero Infrastructure</h1>
-            <p class="subtitle">Build a worldwide content delivery network using WireGuard mesh and anycast routing. No central servers required.</p>
+            <span class="tag">wgmesh + cloudroof</span>
+            <h1>OSS CDN-alternative<br>In Development</h1>
+            <p class="subtitle">Build toward a research-grade content delivery layer using WireGuard mesh and wgmesh overlay routing. Phase 1 is single POP, IPv6-only, and no SLA.</p>
             
             <div class="card-grid" style="margin-top: 4rem;">
                 <div class="card">
                     <div class="card-icon">🌍</div>
                     <h4>Global Reach</h4>
-                    <p>Users automatically route to nearest edge via BGP anycast</p>
+                    <p>Early users help shape a research-grade Phase 1 alpha</p>
                 </div>
                 <div class="card">
                     <div class="card-icon">🔐</div>
@@ -232,7 +232,7 @@
                     <div class="diagram-node user"><div class="diagram-node-label">🇪🇺 EU</div><div class="diagram-node-title">User</div></div>
                     <div class="diagram-node user"><div class="diagram-node-label">🇯🇵 Asia</div><div class="diagram-node-title">User</div></div>
                 </div>
-                <div class="diagram-arrow">↓ BGP routes to nearest</div>
+                <div class="diagram-arrow">↓ wgmesh overlay reaches the active POP</div>
                 <div class="diagram-row">
                     <div class="diagram-node edge"><div class="diagram-node-label">Vultr LA</div><div class="diagram-node-title">Edge PoP</div></div>
                     <div class="diagram-node edge"><div class="diagram-node-label">Hetzner DE</div><div class="diagram-node-title">Edge PoP</div></div>
@@ -256,19 +256,19 @@
     <section class="slide slide-1" id="slide-3">
         <div class="grid-overlay"></div>
         <div class="content">
-            <span class="tag">Edge Node Design</span>
+            <span class="tag">POP Design</span>
             <h2>The "Two Legs" Pattern</h2>
-            <p class="subtitle">Each edge server has two network interfaces: one public (anycast), one private (mesh).</p>
+            <p class="subtitle">Each POP server has two network interfaces: one public, one private mesh.</p>
             
             <div class="two-legs">
                 <div class="leg public">
                     <h4><div class="leg-icon">🌐</div> Public Leg (eth0)</h4>
                     <div class="code-block">
-                        <span class="comment"># Anycast IP - same on ALL edge nodes</span><br>eth0: <span class="string">2001:db8:any::1</span><br><br>
-                        <span class="comment"># BGP announces to upstream</span><br><span class="keyword">neighbor</span> vultr <span class="keyword">announce</span> 2001:db8::/48<br><br>
+                        <span class="comment"># Public IPv6 endpoint for Phase 1</span><br>eth0: <span class="string">2001:db8:any::1</span><br><br>
+                        <span class="comment"># Route-control plane is still in development</span><br><span class="keyword">neighbor</span> upstream <span class="keyword">planned</span> 2001:db8::/48<br><br>
                         <span class="comment"># nginx terminates TLS here</span><br>listen <span class="number">443</span> ssl;
                     </div>
-                    <p style="color: var(--text-muted); margin-top: 1rem;">Users connect here. BGP magic routes them to the nearest edge.</p>
+                    <p style="color: var(--text-muted); margin-top: 1rem;">Users connect here during Phase 1. Routing remains research-grade until the control plane ships.</p>
                 </div>
                 <div class="leg mesh">
                     <h4><div class="leg-icon">🔐</div> Mesh Leg (wg0)</h4>
@@ -283,15 +283,15 @@
         </div>
     </section>
 
-    <!-- Slide 5: BGP Anycast Explained -->
+    <!-- Slide 5: Routing model -->
     <section class="slide slide-2" id="slide-4">
         <div class="grid-overlay"></div>
         <div class="content">
-            <span class="tag">BGP Anycast</span>
-            <h2>How Same IP Works Everywhere</h2>
+            <span class="tag">Routing Model</span>
+            <h2>How Phase 1 Starts Small</h2>
             
             <div class="highlight-box">
-                <p>💡 <strong>Anycast</strong> = Multiple servers announce the same IP prefix. Internet routers automatically send traffic to the <em>nearest</em> announcer.</p>
+                <p>💡 <strong>Phase 1</strong> = one public IPv6 POP, wgmesh overlay routing to private origins, and explicit no-SLA alpha access.</p>
             </div>
             
             <div class="architecture">
@@ -326,7 +326,7 @@
                     </div>
                 </div>
             </div>
-            <p style="color: var(--text-muted); text-align: center; margin-top: 2rem;">No GeoDNS needed. No latency from DNS resolution. Pure routing magic.</p>
+            <p style="color: var(--text-muted); text-align: center; margin-top: 2rem;">No production claims yet. Founding sponsors help decide which Phase 2 routing features matter first.</p>
         </div>
     </section>
 
@@ -340,16 +340,16 @@
             <table class="comparison-table">
                 <thead><tr><th>Option</th><th>Difficulty</th><th>Cost</th><th>Time</th><th>Notes</th></tr></thead>
                 <tbody>
-                    <tr><td><strong>Vultr BGP</strong></td><td><span class="badge badge-green">Easy</span></td><td>$0 extra</td><td>24-48h</td><td>Request via support ticket, they allocate /48</td></tr>
-                    <tr><td><strong>Path.net</strong></td><td><span class="badge badge-green">Easy</span></td><td>~$20/mo/PoP</td><td>Instant</td><td>Built for anycast, prefix included</td></tr>
-                    <tr><td><strong>BuyVM</strong></td><td><span class="badge badge-green">Easy</span></td><td>~$3.50/mo</td><td>24h</td><td>Budget option with BGP, request prefix</td></tr>
+                    <tr><td><strong>Vultr IPv6</strong></td><td><span class="badge badge-green">Easy</span></td><td>$0 extra</td><td>24-48h</td><td>Request via support ticket, they allocate /48</td></tr>
+                    <tr><td><strong>Path.net</strong></td><td><span class="badge badge-green">Easy</span></td><td>~$20/mo/PoP</td><td>Instant</td><td>Built for routed infrastructure, prefix included</td></tr>
+                    <tr><td><strong>BuyVM</strong></td><td><span class="badge badge-green">Easy</span></td><td>~$3.50/mo</td><td>24h</td><td>Budget option with IPv6 prefix request</td></tr>
                     <tr><td><strong>RIPE LIR</strong></td><td><span class="badge badge-orange">Hard</span></td><td>€1400/yr</td><td>Weeks</td><td>Own your prefix forever, more paperwork</td></tr>
-                    <tr><td><strong>GeoDNS (No BGP)</strong></td><td><span class="badge badge-blue">Easiest</span></td><td>Free</td><td>Instant</td><td>Cloudflare DNS geo-steering, no anycast</td></tr>
+                    <tr><td><strong>GeoDNS</strong></td><td><span class="badge badge-blue">Easiest</span></td><td>Free</td><td>Instant</td><td>Cloudflare DNS geo-steering, useful as a later fallback</td></tr>
                 </tbody>
             </table>
             
             <div class="highlight-box">
-                <p>🚀 <strong>Recommended:</strong> Start with GeoDNS (free), same wgmesh backbone. Add true anycast later when you have a prefix.</p>
+                <p>🚀 <strong>Recommended:</strong> Start with one IPv6 POP and the same wgmesh backbone. Add broader routing only after Phase 1 proves useful.</p>
             </div>
         </div>
     </section>
@@ -449,33 +449,37 @@
         <div class="grid-overlay"></div>
         <div class="content">
             <span class="tag">Pilot Program</span>
-            <h2 style="background: linear-gradient(135deg, var(--green), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Reserve an Edge Node</h2>
+            <h2 style="background: linear-gradient(135deg, var(--green), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Become a Founding Sponsor</h2>
             <p class="subtitle" style="margin: 1rem 0 2.5rem;">
-                cloudroof runs the BGP anycast plane; you bring the origin (home server, Pi, any VPS).
+                cloudroof is an OSS CDN-alternative in development; you bring the origin (home server, Pi, any VPS).
                 One-click signup via Polar — EU merchant of record, benefits activate within minutes.
-                Self-hosting stays free under MIT. Pilot tiers fund the managed edge plane.
+                Self-hosting stays free under MIT. Founding sponsors fund the research-grade Phase 1 build.
             </p>
 
             <div class="card-grid" style="max-width: 1100px; margin: 0 auto 3rem;">
                 <div class="card">
                     <div class="card-icon">💚</div>
                     <h4>$5 / month — Founding</h4>
-                    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Vote on roadmap. Early access to managed-edge beta. Name on contributors page.</p>
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Name in CONTRIBUTORS/SPONSORS, Discord access, Phase 2 voting, and first alpha access.</p>
                     <a href="https://buy.polar.sh/polar_cl_MIoEXmQ6vlAmJSyoFQsvuNyzSbxtk2OZqacJb1VzxpN" target="_blank" rel="noopener" data-event="cta_click" data-tier="founding" data-price="5" style="display: inline-block; padding: 0.7rem 1.4rem; background: rgba(0, 255, 136, 0.12); border: 1px solid var(--green); border-radius: 6px; color: var(--green); text-decoration: none; font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">Become a founding member →</a>
                 </div>
+                <!--
                 <div class="card" style="border: 2px solid var(--green); position: relative;">
                     <div style="position: absolute; top: -12px; right: 1rem; background: var(--green); color: #002818; padding: 0.25rem 0.85rem; border-radius: 100px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; font-family: 'JetBrains Mono', monospace;">RECOMMENDED</div>
                     <div class="card-icon">🚀</div>
-                    <h4>$20 / month — Edge Node</h4>
-                    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Founding tier + a reserved managed edge node when the pilot opens. First access to the anycast plane.</p>
-                    <a href="https://buy.polar.sh/polar_cl_9PiriKvMdDF9pXvoF9RmlXrud3r71uVWD58LA1dlojv" target="_blank" rel="noopener" data-event="cta_click" data-tier="edge_node" data-price="20" style="display: inline-block; padding: 0.7rem 1.4rem; background: var(--green); color: #002818; border-radius: 6px; text-decoration: none; font-weight: 700; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">Reserve your edge node →</a>
+                    <h4>$20 / month — Builder</h4>
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Hidden until the Phase 1 control plane is live.</p>
+                    <a href="https://buy.polar.sh/polar_cl_9PiriKvMdDF9pXvoF9RmlXrud3r71uVWD58LA1dlojv" target="_blank" rel="noopener" data-event="cta_click" data-tier="edge_node" data-price="20" style="display: inline-block; padding: 0.7rem 1.4rem; background: var(--green); color: #002818; border-radius: 6px; text-decoration: none; font-weight: 700; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">Support the build →</a>
                 </div>
+                -->
+                <!--
                 <div class="card">
                     <div class="card-icon">🛠</div>
                     <h4>$100 / month — Operator</h4>
-                    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Edge-node tier + direct Slack/Discord channel with the maintainer. Influence the integration roadmap.</p>
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Hidden until the Phase 1 control plane is live.</p>
                     <a href="https://buy.polar.sh/polar_cl_7Qm9hJkpcJlHW27nWEezHJiPaWgX9E5tcAzQK4cs5K6" target="_blank" rel="noopener" data-event="cta_click" data-tier="mesh_operator" data-price="100" style="display: inline-block; padding: 0.7rem 1.4rem; background: rgba(0, 255, 136, 0.12); border: 1px solid var(--green); border-radius: 6px; color: var(--green); text-decoration: none; font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">Become a mesh operator →</a>
                 </div>
+                -->
             </div>
 
             <p style="text-align: center; margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">
