@@ -1,0 +1,23 @@
+.github/workflows/deploy.yml
+  s_266211d5a327a3::t_806236c0a5b33e 1-45
+.github/workflows/ci.yml
+  s_266211d5a327a3::t_e27120ac028b17 1-47
+.github/workflows/impl-judge.yml
+  s_266211d5a327a3::t_5a4b4cbbfc5dc1 1-90
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "7eedec2aa31c00014a830d6028b6caff9e6ff2cc",
+  "prompts": {},
+  "sessions": {
+    "s_266211d5a327a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3a89956a-215c-407d-afb0-858ccec3651f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Marty <saint@ghost.lt>"
+    }
+  }
+}
