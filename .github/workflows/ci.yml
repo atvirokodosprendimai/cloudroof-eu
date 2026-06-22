@@ -1,0 +1,47 @@
+name: CI
+
+# Secretless, all-authors build gate for cloudroof-eu (the JS/Workers analogue of
+# wgmesh's go build/test gate). cloudroof-eu is a STATIC-ASSETS Worker — no
+# package.json/build step, just ./dist served by Cloudflare Workers Assets — so
+# the gate validates the wrangler config + the assets without deploying:
+#   * `wrangler deploy --dry-run` parses wrangler.jsonc, resolves ./dist, and
+#     bundles WITHOUT touching the Cloudflare API (no token required), so a
+#     malformed config or missing assets dir fails the PR.
+#   * a presence check ensures ./dist is non-empty (a deploy of nothing is a
+#     site outage).
+# Make `ci` a required status check on main alongside `impl-judge`.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Assets present
+        run: |
+          set -euo pipefail
+          [ -d dist ] || { echo "::error::dist/ missing — wrangler serves ./dist"; exit 1; }
+          if [ -z "$(find dist -type f -print -quit)" ]; then
+            echo "::error::dist/ is empty — refusing to ship an empty site"; exit 1
+          fi
+          echo "dist/ has $(find dist -type f | wc -l | tr -d ' ') file(s)"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate wrangler config (dry-run, no API token)
+        run: |
+          set -euo pipefail
+          # --dry-run bundles + validates config locally; it never calls the CF
+          # API, so it needs no CLOUDFLARE_API_TOKEN. A config/assets error here
+          # is the same error a real deploy would hit.
+          npx --yes wrangler@4 deploy --dry-run

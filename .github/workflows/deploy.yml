@@ -1,0 +1,45 @@
+name: Deploy
+
+# CD: publish ./dist to the `creu` Cloudflare Worker on every push to main. CD is
+# the one thing that stays in Actions (Actions = CI/CD-only principle, KTD3) — the
+# box produces code + merges PRs, this deploys the merged result. push:main fires
+# only after a PR merges, and branch protection (required `ci` + `impl-judge`)
+# means only green PRs reach main — so this is effectively green-main-gated.
+#
+# Required secrets:
+#   CLOUDFLARE_API_TOKEN   — Workers Scripts:Edit on the creu account
+#   CLOUDFLARE_ACCOUNT_ID  — the account hosting the creu Worker
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-creu
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate secrets
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          : "${CLOUDFLARE_API_TOKEN:?CLOUDFLARE_API_TOKEN secret missing}"
+          : "${CLOUDFLARE_ACCOUNT_ID:?CLOUDFLARE_ACCOUNT_ID secret missing}"
+
+      - name: Deploy ./dist to creu
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
