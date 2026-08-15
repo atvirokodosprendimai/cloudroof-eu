@@ -1,0 +1,14 @@
+dist/index.html
+  h_f6687c1f6f3520 455-456,462,464,472,480,486
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "6e6e26267ebb3ff01969b039fa45ded2c7397308",
+  "prompts": {},
+  "humans": {
+    "h_f6687c1f6f3520": {
+      "author": "Marty <saint@ghost.lt>"
+    }
+  }
+}
